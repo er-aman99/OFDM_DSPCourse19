@@ -13,7 +13,7 @@
 close all
 clc
 
-Generating and coding data
+%Generating and coding data
 t_data=(randint(9600,1) -1 )';
 x=1;
 si=1; %for BER rows
@@ -26,7 +26,7 @@ n=6;
 s1=size(data,2);  % Size of input matrix
 j=s1/k;
 
-Convolutionally encoding data 
+%Convolutionally encoding data 
 constlen=7;
 codegen = [171 133];    % Polynomial
 trellis = poly2trellis(constlen, codegen);
@@ -39,7 +39,7 @@ matrix=reshape(codedata,j,4);
 intlvddata = matintrlv(matrix',2,2)'; % Interleave.
 intlvddata=intlvddata';
 
-Binary to decimal conversion
+%Binary to decimal conversion
 dec=bi2de(intlvddata','left-msb');
 
 %16-QAM Modulation
@@ -47,7 +47,7 @@ M=16;
 y = qammod(dec,M);
 % scatterplot(y);
 
-Pilot insertion
+%Pilot insertion
 lendata=length(y);
 pilt=3+3j;
 nofpits=4;
@@ -69,10 +69,10 @@ for i=1:52
     
 end
 
-IFFT
+%IFFT
 ifft_sig=ifft(pilt_data',64);
 
-Adding Cyclic Extension
+%Adding Cyclic Extension
 cext_data=zeros(80,1);
 cext_data(1:16)=ifft_sig(49:64);
 for i=1:64
@@ -81,7 +81,7 @@ for i=1:64
     
 end
 
-Channel SNR
+%Channel SNR
  o=1;
 for snr=0:2:50
 ofdm_sig=awgn(cext_data,snr,'measured'); % Adding white Gaussian Noise
@@ -90,7 +90,7 @@ ofdm_sig=awgn(cext_data,snr,'measured'); % Adding white Gaussian Noise
 % plot(index,cext_data,'b',index,ofdm_sig,'r'); %plot both signals
 % legend('Original Signal to be Transmitted','Signal with AWGN');
 
-                 RECEIVER
+%                 RECEIVER
 %Removing Cyclic Extension
 for i=1:64
     
@@ -98,10 +98,10 @@ for i=1:64
     
 end
 
-FFT
+%FFT
 ff_sig=fft(rxed_sig,64);
 
-Pilot Synch%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Pilot Synch%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for i=1:52
     
     synched_sig1(i)=ff_sig(i+6);
@@ -117,14 +117,14 @@ for i=(1:13:52)
 end
 % scatterplot(synched_sig)
 
-Demodulation
+%Demodulation
 dem_data= qamdemod(synched_sig,16);
 
-Decimal to binary conversion
+%Decimal to binary conversion
 bin=de2bi(dem_data','left-msb');
 bin=bin';
 
-De-Interleaving
+%De-Interleaving
 deintlvddata = matdeintrlv(bin,2,2); % De-Interleave
 deintlvddata=deintlvddata';
 deintlvddata=deintlvddata(:)';
@@ -135,7 +135,7 @@ k=3;
 decodedata =vitdec(deintlvddata,trellis,5,'trunc','hard');  % decoding datausing veterbi decoder
 rxed_data=decodedata;
 
-Calculating BER
+%Calculating BER
 rxed_data=rxed_data(:)';
 errors=0;
 c=xor(data,rxed_data);
@@ -154,7 +154,7 @@ o=o+1;
  si=si+1;
 end % main data loop
 
-Time averaging for optimum results
+%Time averaging for optimum results
 for col=1:25        %%%change if SNR loop Changed
     ber(1,col)=0;  
 for row=1:100

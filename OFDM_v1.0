@@ -14,7 +14,7 @@ close all
 clc
 
 %Generating and coding data
-t_data=(randint(9600,1) -1 )';
+t_data=randi([0,1],9600,1)';
 x=1;
 si=1; %for BER rows
 
